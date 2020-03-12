@@ -29,7 +29,8 @@ namespace MachineOldHouse
             //    "0 0 6 ? * * *",    //glucose level every day at 6am
             //    "0 0/5 * ? * * *",    //heart rate every  minutes
             //    "0 0 * ? * * *",    //blood pressure every hour
-            //    "0 0,30 * ? * * *"  //mesure temperature every 30 min
+            //    "0 0,30 * ? * * *",  //mesure temperature every 30 min
+            //     "* 0/10 * ? * * *"   //check every 10 min
             //    );
 
             //testing
@@ -37,7 +38,8 @@ namespace MachineOldHouse
                 "0/3 * * ? * * *",    //glucose level every day at 6am
                 "0/5 * * ? * * *",    //heart rate every  minutes
                 "0/11 * * ? * * *",    //blood pressure every hour
-                "0/13 * * ? * * *"  //mesure temperature every 30 min
+                "0/13 * * ? * * *",  //mesure temperature every 30 min
+                "0/10 * * ? * * *"
                 );
             sender.scheduler = scheduler;
             await scheduler.start();

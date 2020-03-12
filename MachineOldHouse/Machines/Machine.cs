@@ -37,9 +37,11 @@ namespace MachineOldHouse
             return alert;
         }
 
-        public void notify(Alert alert)
+        public async void notify(Alert alert)
         {
-            sender.sendAlert(alert);
+            bool b = await sender.sendAlert(alert);
+            Console.WriteLine( b ?  "ALERT ARRIVED" : "START ALARM IMMEDIATELLY, REQUEST DID NOT ARRIVED TO THE SERVER");
+            
         }
 
         public void check()

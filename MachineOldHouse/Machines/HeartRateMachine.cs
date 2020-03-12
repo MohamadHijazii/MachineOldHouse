@@ -29,8 +29,8 @@ namespace MachineOldHouse
             inc -= 0.5;
             last_value += (float)inc;
             n++;
-            if(n == 4)
-                last_value = 120;
+            //if(n == 4)
+            //    last_value = 120;
             Console.WriteLine($"Mesure Heart Rate at {DateTime.Now} : {last_value}");
             return last_value;
         }

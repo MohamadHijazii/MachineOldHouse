@@ -10,19 +10,16 @@ namespace MachineOldHouse
 {
     public class Scheduler 
     {
-        string glucose, bloodpressure, heartrate, temperature;
+        string glucose, bloodpressure, heartrate, temperature, check;
         public IScheduler sched;
-        public Scheduler(string glucose, string bloodpressure, string heartrate, string temperature)
+        public Scheduler(string glucose, string bloodpressure, string heartrate, string temperature,string check)
         {
             this.glucose = glucose;
             this.bloodpressure = bloodpressure;
             this.heartrate = heartrate;
             this.temperature = temperature;
+            this.check = check;
         }
-
-      
-
-
 
         public async Task start()
         {
@@ -35,7 +32,6 @@ namespace MachineOldHouse
 
             sched = await factory.GetScheduler();
             await sched.Start();
-            Console.WriteLine("start Scheduling");
 
             IJobDetail Glucosejob = JobBuilder.Create<GlucoseJob>()
                 .WithIdentity("glucose", "group1")
@@ -82,15 +78,23 @@ namespace MachineOldHouse
                 .ForJob("Temperature", "group4")
                 .Build();
 
+            IJobDetail checkJob = JobBuilder.Create<CheckJob>()
+                .WithIdentity("check", "group5")
+                .Build();
+            ITrigger checkTrigger = TriggerBuilder.Create()
+                .WithIdentity("checkt", "group5")
+                .WithCronSchedule(check)
+                .ForJob("check", "group5")
+                .Build();
+
 
 
             await sched.ScheduleJob(Glucosejob, Glucosetrigger);
             await sched.ScheduleJob(HeartRatejob, HeartRatetrigger);
             await sched.ScheduleJob(BloodPressurejob, BloodPressuretrigger);
             await sched.ScheduleJob(Temperaturejob, Temperaturetrigger);
-
+            await sched.ScheduleJob(checkJob,checkTrigger);
             
-            Console.WriteLine("End Scheduling");
         }
 
         public void update() => sched.PauseAll();

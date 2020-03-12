@@ -31,8 +31,12 @@ namespace MachineOldHouse
         public override string ToString()
         {
             return "Alert:  " + text + "\n" + info;
-        } 
+        }
 
+        public override int GetHashCode()
+        {
+            return info.GetHashCode();
+        }
     }
 
     public class AlertInfo
@@ -61,6 +65,11 @@ namespace MachineOldHouse
         public override string ToString()
         {
             return "Glucose: " + glucose + "\nHeart Rate: " + heartRate + "\nBlood Pressure: " + bloodPressure + "\nTemperature: " + temperature + "\n";
+        }
+
+        public override int GetHashCode()
+        {
+            return (int)glucose * 5 + (int)heartRate * 7 + (int)bloodPressure * 11 + (int)temperature * 13;
         }
     }
 
