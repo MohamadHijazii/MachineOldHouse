@@ -7,7 +7,7 @@ namespace MachineOldHouse
     public class SecurityHelper
     {
         public static string getHash(string s)
-        {
+        {   //the function used to hash the message 
             StringBuilder hash = new StringBuilder();
             char[] t = s.ToCharArray();
             int n = 65;

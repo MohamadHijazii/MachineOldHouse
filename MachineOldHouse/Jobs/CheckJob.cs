@@ -10,10 +10,10 @@ namespace MachineOldHouse
     {
         public async Task Execute(IJobExecutionContext context)
         {
-            Sender sender = Sender.GetSender();
-            string s = await sender.sendCheck();
-            string hash = SecurityHelper.getHash(s);
-            await sender.sendHash(hash);
+            Sender sender = Sender.GetSender(); //geting the singleton sender 
+            string s = await sender.sendCheck();    //send the first check step
+            string hash = SecurityHelper.getHash(s);    //hash the message
+            await sender.sendHash(hash);    //second check connection step
         }
     }
 }

@@ -10,15 +10,18 @@ namespace MachineOldHouse
     public class Sender
     {
         private static Sender sender = null;
-        private int id;
+        private int id; //the id of the machine is in the sender since it is sigleton
         private string url;
         public AlertInfo info;
         public Scheduler scheduler { get; set; }
 
+        //machines 
         public GlucoseMachine glucose;
         public HeartRateMachine heartRate;
         public BloodPressureMachine bloodPressure;
         public TemperatureMachine temperature;
+
+        //private sigleton constructor
         private Sender()
         {
             url = "";
@@ -41,13 +44,11 @@ namespace MachineOldHouse
             setInfo();
             alert.info = info;
             alert.text = $"Patient {id} has a medical danger!";
-            string json = alert.toJson();
+            string json = alert.toJson();   //json string from the alert
             Console.WriteLine(json);
-            string res = await send(json);
-            //Console.WriteLine($"From machine {alert.GetHashCode()}");
-            //Console.WriteLine($"From Server {res}");
+            string res = await send(json);  //send the alert async
             Console.WriteLine($"Equal Hash ? {alert.GetHashCode().ToString().CompareTo(res) == 0}");
-
+            //compare the hashes to insure that the alert has arrived correctly
 
             return alert.GetHashCode().ToString().CompareTo(res) == 0;
         }
@@ -58,6 +59,7 @@ namespace MachineOldHouse
             setHeartRate(heartRate.getLastVal());
             setbloodPressure(bloodPressure.getLastVal());
             setTemperature(temperature.getLastVal());
+            //get the last calculated values to send
         }
 
         public void setGlucose(float f) { info.glucose = f; }
@@ -74,26 +76,27 @@ namespace MachineOldHouse
             {
                 StringContent content = new StringContent(json,Encoding.UTF8,"application/json");
                 HttpResponseMessage res = await client.PostAsync(url, content);
-                //Console.WriteLine($"Status code : {res.StatusCode}");
-                //Console.WriteLine($"Returned string : {res.Content.ReadAsStringAsync().Result}");
+                //the result of the responce is the hash of the alert
                 return  res.Content.ReadAsStringAsync().Result;
             }
         }
 
         public async Task<string> sendCheck()
-        {
+        {   //first step in the check, send the id
             string url = $"https://localhost:44321/HandleAlert/check/{id}";
             Uri uri = new Uri(url);
             using (HttpClient client = new HttpClient())
             {
                 HttpResponseMessage res = await client.GetAsync(url);
                 string message = res.Content.ReadAsStringAsync().Result;
+                //get the message from the server to hash
                 return message;
             }
         }
 
         public async Task sendHash(string hash)
         {
+            //after hashing the message we should the hash
             string url = $"https://localhost:44321/HandleAlert/check/{id}/{hash}";
             Uri uri = new Uri(url);
             using (HttpClient client = new HttpClient())
@@ -101,6 +104,7 @@ namespace MachineOldHouse
                 HttpResponseMessage res = await client.GetAsync(url);
                 string message = res.Content.ReadAsStringAsync().Result;
                 Console.WriteLine($"Status: {res.StatusCode}, Message :{message}");
+                //The returned message
             }
         }
 

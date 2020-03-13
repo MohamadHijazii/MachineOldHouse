@@ -23,15 +23,17 @@ namespace MachineOldHouse
             battery = 100;
         }
 
-        public bool CompareTolerance(float value)  //it returns false if every think is okay
+        public bool CompareTolerance(float value)
         {
+            //it returns false if every think is okay
             return value <= tolerance[0] || value >= tolerance[1];
         }
 
-        public abstract float mesure();
+        public abstract float mesure(); //each machine has its own way to measure
+
         public Alert createAlert()
         {
-            
+            //creation of the alert to send
             Alert alert = new Alert("Alert ", alertType.Danger, DateTime.Now);
 
             return alert;
@@ -39,25 +41,27 @@ namespace MachineOldHouse
 
         public async void notify(Alert alert)
         {
+            //notify the sender to send the alert
             bool b = await sender.sendAlert(alert);
+            //In case the alert did not arrive to the server start an alarm
             Console.WriteLine( b ?  "ALERT ARRIVED" : "START ALARM IMMEDIATELLY, REQUEST DID NOT ARRIVED TO THE SERVER");
             
         }
 
         public void check()
         {
-                float value = mesure();
-                if (CompareTolerance(value))
+                float value = mesure();    //Machine measures the patient's <Glucose,...>
+                if (CompareTolerance(value))//Compare the value with the tolerance
                 {
-                    Console.WriteLine("-----------------");
-                    Alert alert = createAlert();
-                    Console.WriteLine("Alert should be sent");
-                    notify(alert);
-                    sender.scheduler.update();
+                    //If there is a danger
+                    Alert alert = createAlert();    //we create the alert
+                    Console.WriteLine("Sending the alert ...");
+                    notify(alert);  //Notify the observer (Sender)
+                    sender.scheduler.update();  //pause the machine to avoid sending alerts
                 }
         }
 
-        public float getLastVal() { return last_value; }
+        public float getLastVal() { return last_value; }    //last value calculated by the machine
 
     }
 }
